@@ -1,0 +1,212 @@
+{% extends 'poll/layouts/main.html' %}
+{% block title %}
+  Social Media
+{% endblock title %} 
+
+{% block content %}
+<style>
+  body{
+    background-image: url('static/image/bg.jpg');
+  }
+  /* Style for the sidebar */
+  #sidebar {
+    float: left;
+    width: 35%;
+    height: 10%;
+    padding: 90px;
+    background-color: #f2f2f2;
+  }
+
+  #sidebar h2 {
+    color: #333;
+  }
+
+  #sidebar ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  #sidebar li {
+    margin-bottom: 20px;
+    font-size: 3em;
+  }
+
+  #sidebar a {
+    text-decoration: none;
+    color: #0066cc;
+    font-weight: bold;
+  }
+
+  #sidebar a:hover {
+    text-decoration: underline;
+  }
+
+  /* Style for the content area */
+  #content {
+    float: left;
+    width: 95%;
+    padding: 20px;
+  }
+
+  /* Clear floats to prevent container from collapsing */
+  .clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+
+  #message-column {
+    width: 70.5%;
+    padding: 22px;
+    background-color: #e6e6e6;
+    margin-left: 36.4%;
+    margin-top: 0.3%;
+
+  }
+
+  #input-container {
+    position: fixed;
+    bottom: 0;
+    width: 60%;
+    padding: 15px;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    margin-left: 1%;
+  }
+
+  #message-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size: 16px;
+  }
+
+  #send-button {
+    background-color: #25D366; /* WhatsApp green color */
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  #send-button:hover {
+    background-color: #128C7E; /* Darker shade for hover effect */
+  }
+  .whatsapp-header {
+      background-color: #075e54; /* WhatsApp green color */
+      color: #fff; /* White text */
+      padding: 10px;
+      text-align: center;
+    }
+
+    /* Style for the contact list */
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    /* Style for each contact item */
+    .contact-item {
+      margin-bottom: 10px;
+    }
+
+    .contact-link {
+      text-decoration: none;
+      color: #333; /* Default link color */
+    }
+</style>
+<div class="whatsapp-header">
+  <h2>WhatsApp Messages</h2>
+</div>
+<div id="sidebar">  
+  <h2>Contact</h2>
+  <ul>
+    {% for contact in contacts %}
+      <li class="contact-item">
+        <a href="#" class="contact-link" data-name="{{ contact.name }}">{{ contact.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div style="margin-top: -40%;" id="content" class="clearfix">
+  <div id="message-column">
+    <h2 id="selected-contact">Contact</h2>
+    <div id="messages-container">
+      <!-- Display messages here -->
+    </div>
+    <!-- Add this in your HTML body -->
+    <div id="input-container">
+      <input type="text" id="message-input" placeholder="Type your message">
+      <button id="emoji-button">😊</button>
+      <button id="send-button">Send</button>
+      <emoji-picker for="message-input"></emoji-picker>
+    </div>
+<!-- Add these in your HTML head -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojipicker-element@2.1.0/dist/emojipicker-element.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/emojipicker-element@2.1.0/dist/emojipicker-element.esm.js"></script>
+
+</div>
+<script>
+  $(document).ready(function() {
+    $(".contact-link").on("click", function(e) {
+      e.preventDefault();
+      var contactName = $(this).data("name");
+      $("#selected-contact").text( contactName);
+      // Fetch and display messages for the selected contact (you need to implement this part)
+      // For example, you can use AJAX to load messages dynamically.
+      // Then update the content of the messages-container.
+      $("#messages-container").html("<p>Online " +  "</p>");
+    });
+
+    $("#emoji-button").on("click", function() {
+      // Toggle emoji picker visibility
+      var emojiPicker = document.querySelector("emoji-picker");
+      emojiPicker.toggle();
+    });
+
+    $("#send-button").on("click", function() {
+      var message = $("#message-input").val();
+
+      // Check if the message contains forbidden words
+      if (containsForbiddenWords(message)) {
+        alert("Message contains forbidden words. Please remove them before sending.");
+        return;
+      }
+
+      // Implement logic to send the message (e.g., using AJAX)
+      // For now, prepend the message to the messages-container.
+      $("#messages-container").prepend("<p>You: " + message + "</p>");
+      // Clear the input field
+      $("#message-input").val("");
+    });
+
+    function containsForbiddenWords(message) {
+      // Convert the message to lowercase for case-insensitive comparison
+      message = message.toLowerCase();
+
+      // Define forbidden words
+      var forbiddenWords = ["cyber poll", "fuck","pussy"];
+
+      // Check if the message contains any forbidden words
+      for (var i = 0; i < forbiddenWords.length; i++) {
+        if (message.includes(forbiddenWords[i])) {
+          return true;
+        }
+      }
+      return false;
+    }
+  });
+</script>
+
+
+
+
+
+{% endblock content %}
